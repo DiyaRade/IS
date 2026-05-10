@@ -1,0 +1,60 @@
+<html>
+	<head>
+		<title> Diffie-Hellman Key Exchange </title>
+	</head>
+	
+	<body align="center">
+		<h1>  Diffie-Hellman Key Exchange </h1>
+		
+		<label>Enter Prime Number: </label><br>
+		<input type="number" id="p"><br><br>
+
+		<label>Enter Generator: </label><br>
+		<input type="number" id="g"><br><br>
+
+		<hr>
+		<label>Alice Private key: </label><br>
+		<input type="number" id="a"><br><br>
+		
+		<label>Bob Private key: </label><br>
+		<input type="number" id="b"><br><br>
+
+		<button onclick="calculate()">Generate key</button><br>
+
+		<hr>
+		<h3>Result</h3>
+		<p>Alice Public key: <span id="A"></span></p>
+		<p>Bob Public key: <span id="B"></span></p>
+		<p>Alice Shared key: <span id="S1"></span></p>
+		<p>Bob Shared key: <span id="S2"></span></p>
+
+		<script>
+			function modToExp(base,exp,mod){
+				result=1;
+				base=base%mod;
+				while(exp>0){
+					if(exp%2 === 1) result=(result*base)%mod;
+					exp=Math.floor(exp/2);
+					base=(base*base)%mod;
+				}
+				return result;
+			}
+			function calculate(){
+				let p=parseInt(document.getElementById("p").value);
+				let g=parseInt(document.getElementById("g").value);
+				let a=parseInt(document.getElementById("a").value);
+				let b=parseInt(document.getElementById("b").value);
+				
+				let A=modToExp(g,a,p);
+				let B=modToExp(g,b,p);
+				let S1=modToExp(B,a,p);
+				let S2=modToExp(A,b,p);
+
+				document.getElementById("A").innerText=A;
+				document.getElementById("B").innerText=B;
+				document.getElementById("S1").innerText=S1;
+				document.getElementById("S2").innerText=S2;
+			}
+		</script>	
+	
+	</body>
