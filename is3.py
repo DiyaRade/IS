@@ -73,11 +73,52 @@ def decrypt(cipher,round_keys):
 	combined=right+left
 	return permute(combined,IP_INV)
 
-text=input("Enter string: ")
-key=input("Enter key: ")
 
-roundkeys=generate_key(key)
-cipher=encrypt(text,roundkeys)
-print("Encrypted string: ",cipher)
-plain=decrypt(cipher,roundkeys)
-print("Decrypted string: ",plain)
+
+# Convert text to binary
+def text_to_binary(text):
+	binary=''
+	for ch in text:
+		binary += format(ord(ch),'08b')
+	return binary
+
+# Convert binary to text
+def binary_to_text(binary):
+	text=''
+	for i in range(0,len(binary),8):
+		byte=binary[i:i+8]
+		text += chr(int(byte,2))
+	return text
+
+
+text=input("Enter string: ")
+key=input("Enter 8-bit key: ")
+binary_key=text_to_binary(key)
+roundkeys=generate_key(binary_key)
+
+binary_text=text_to_binary(text)
+
+cipher_binary=''
+
+# Encrypt each 8-bit block
+for i in range(0,len(binary_text),8):
+	block=binary_text[i:i+8]
+
+	# padding if block less than 8 bits
+	if len(block) < 8:
+		block = block.ljust(8,'0')
+
+	cipher_binary += encrypt(block,roundkeys)
+
+print("Encrypted Binary:",cipher_binary)
+
+# Decrypt
+decrypted_binary=''
+
+for i in range(0,len(cipher_binary),8):
+	block=cipher_binary[i:i+8]
+	decrypted_binary += decrypt(block,roundkeys)
+
+plain=binary_to_text(decrypted_binary)
+
+print("Decrypted String:",plain)
